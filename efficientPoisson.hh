@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include <cstdlib>
+#include <time.h>
+#include <math.h>
 
 struct PVector {
     double x, y;

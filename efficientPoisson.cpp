@@ -62,8 +62,8 @@ std::vector<PVector> poissonDiskSampling(double radius, int trial, int width, in
         for (int tries = 0; tries < trial; tries++) {
             double theta = static_cast<double>(rand()) / RAND_MAX * 360;
             double new_radius = radius + static_cast<double>(rand()) / RAND_MAX * radius;
-            double pnewx = p.x + new_radius * std::cos(theta / 180.0);
-            double pnewy = p.y + new_radius * std::sin(theta / 180.0);
+            double pnewx = p.x + new_radius * std::cos(theta * 3.1415 / 180.0);
+            double pnewy = p.y + new_radius * std::sin(theta * 3.1415 / 180.0);
             PVector pnew(pnewx, pnewy);
 
             if (!isValidPoint(grid, cellsize, ncells_width, ncells_height, pnew, radius, width, height))
@@ -84,10 +84,10 @@ std::vector<PVector> poissonDiskSampling(double radius, int trial, int width, in
 }
 
 // int main() {
-//     int width = 800;
-//     int height = 600;
-//     double radius = 30.0;
-//     int k = 30;
+//     int width = 1000;
+//     int height = 500;
+//     double radius = 15;
+//     int k = 3000;
 
 //     std::vector<PVector> points = poissonDiskSampling(radius, k, width, height);
 

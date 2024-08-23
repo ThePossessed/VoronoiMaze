@@ -14,6 +14,8 @@ int main()
    point p;
    std::vector<point> sites = { };
 
+   srand(time(nullptr));
+
    /* Naive Approach for Poisson Disk Distribution */
    // srand(time(nullptr));
 
