@@ -1,20 +1,11 @@
-#include <iostream>
-#include <vector>
-#include <cmath>
+#include "efficientPoisson.hh"
 
-struct PVector {
-    float x, y;
-    
-    PVector() : x(0), y(0) {}
-    PVector(float x, float y) : x(x), y(y) {}
-};
-
-float dist(float x1, float y1, float x2, float y2) {
+double dist(double x1, double y1, double x2, double y2) {
     return std::sqrt(std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2));
 }
 
-bool isValidPoint(std::vector<std::vector<PVector*>>& grid, float cellsize,
-                  int gwidth, int gheight, const PVector& p, float radius, int width, int height) {
+bool isValidPoint(std::vector<std::vector<PVector*>>& grid, double cellsize,
+                  int gwidth, int gheight, const PVector& p, double radius, int width, int height) {
     // Make sure the point is on the screen
     if (p.x < 0 || p.x >= width || p.y < 0 || p.y >= height)
         return false;
@@ -40,19 +31,19 @@ bool isValidPoint(std::vector<std::vector<PVector*>>& grid, float cellsize,
     return true;
 }
 
-void insertPoint(std::vector<std::vector<PVector*>>& grid, float cellsize, const PVector& point) {
+void insertPoint(std::vector<std::vector<PVector*>>& grid, double cellsize, const PVector& point) {
     int xindex = std::floor(point.x / cellsize);
     int yindex = std::floor(point.y / cellsize);
     grid[xindex][yindex] = new PVector(point.x, point.y);
 }
 
-std::vector<PVector> poissonDiskSampling(float radius, int k, int width, int height) {
+std::vector<PVector> poissonDiskSampling(double radius, int trial, int width, int height) {
     const int N = 2;
     std::vector<PVector> points;
     std::vector<PVector> active;
 
     PVector p0(rand() % width, rand() % height);
-    float cellsize = std::floor(radius / std::sqrt(N));
+    double cellsize = std::floor(radius / std::sqrt(N));
 
     int ncells_width = std::ceil(width / cellsize) + 1;
     int ncells_height = std::ceil(height / cellsize) + 1;
@@ -68,11 +59,11 @@ std::vector<PVector> poissonDiskSampling(float radius, int k, int width, int hei
         PVector p = active[random_index];
 
         bool found = false;
-        for (int tries = 0; tries < k; tries++) {
-            float theta = static_cast<float>(rand()) / RAND_MAX * 360;
-            float new_radius = radius + static_cast<float>(rand()) / RAND_MAX * radius;
-            float pnewx = p.x + new_radius * std::cos(theta / 180.0f);
-            float pnewy = p.y + new_radius * std::sin(theta / 180.0f);
+        for (int tries = 0; tries < trial; tries++) {
+            double theta = static_cast<double>(rand()) / RAND_MAX * 360;
+            double new_radius = radius + static_cast<double>(rand()) / RAND_MAX * radius;
+            double pnewx = p.x + new_radius * std::cos(theta / 180.0);
+            double pnewy = p.y + new_radius * std::sin(theta / 180.0);
             PVector pnew(pnewx, pnewy);
 
             if (!isValidPoint(grid, cellsize, ncells_width, ncells_height, pnew, radius, width, height))
@@ -92,17 +83,17 @@ std::vector<PVector> poissonDiskSampling(float radius, int k, int width, int hei
     return points;
 }
 
-int main() {
-    int width = 2000;
-    int height = 1000;
-    float radius = 10.0f;
-    int k = 30;
+// int main() {
+//     int width = 800;
+//     int height = 600;
+//     double radius = 30.0;
+//     int k = 30;
 
-    std::vector<PVector> points = poissonDiskSampling(radius, k, width, height);
+//     std::vector<PVector> points = poissonDiskSampling(radius, k, width, height);
 
-    for (const PVector& point : points) {
-        std::cout << point.x << " " << point.y << std::endl;
-    }
+//     for (const PVector& point : points) {
+//         std::cout << point.x << " " << point.y << std::endl;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

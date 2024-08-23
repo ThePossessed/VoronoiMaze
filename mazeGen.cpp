@@ -1,8 +1,9 @@
-#include "voronoi.hh"
+#include "mazeGen.hh"
+#include "efficientPoisson.hh"
 
 priority_queue<point,  vector<point>,  gt> points; // site events
 priority_queue<event*, vector<event*>, gt> events; // circle events
-double active_grid[n][dim];
+double active_grid[(int) (WIDTH*HEIGHT/(r*r))][dim];
 int numSite = 0;
 int startCenter;
 int endCenter;
@@ -13,26 +14,40 @@ int main()
    point p;
    std::vector<point> sites = { };
 
-   srand(time(nullptr));
+   /* Naive Approach for Poisson Disk Distribution */
+   // srand(time(nullptr));
 
-   int trial = 0;
-   while (numSite < n) {      
-      double x = ((double) rand() / (RAND_MAX)) * WIDTH;
-      double y = ((double) rand() / (RAND_MAX)) * HEIGHT;
+   // int trial = 0;
+   // while (numSite < n) {      
+   //    double x = ((double) rand() / (RAND_MAX)) * WIDTH;
+   //    double y = ((double) rand() / (RAND_MAX)) * HEIGHT;
 
-      if (check(numSite, x, y, active_grid)){
-         active_grid[numSite][0] = x;
-         active_grid[numSite][1] = y;
-         sites.push_back({ x, y });
+   //    if (check(numSite, x, y, active_grid)){
+   //       active_grid[numSite][0] = x;
+   //       active_grid[numSite][1] = y;
+   //       sites.push_back({ x, y });
+   //       numSite++;
+   //    } else {
+   //       trial++;
+   //    }
+
+   //    if (trial > k) {
+   //       break;
+   //    }
+   // }
+   /* Naive Approach for Poisson Disk Distribution */
+
+
+   std::vector<PVector> efficientPoisson = poissonDiskSampling(r, 30, WIDTH*2, HEIGHT*2);
+   for (const PVector& efficientPoint : efficientPoisson) {
+      if (efficientPoint.x >= WIDTH && efficientPoint.x <= WIDTH*2 && efficientPoint.y >= HEIGHT && efficientPoint.y <= HEIGHT*2){
+         active_grid[numSite][0] = efficientPoint.x-WIDTH;
+         active_grid[numSite][1] = efficientPoint.y-HEIGHT;
+         sites.push_back({ efficientPoint.x - WIDTH, efficientPoint.y - HEIGHT });
          numSite++;
-      } else {
-         trial++;
-      }
-
-      if (trial > k) {
-         break;
       }
    }
+
    for (const point& p : sites) {
       points.push(p);
 
